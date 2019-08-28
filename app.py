@@ -2,19 +2,22 @@
 
 import utils
 from aiohttp import web
-import json
+
+import asyncio 
+import routes
 
 
 
-async def handle(request):
-	data = utils.get_master_list()
-	response_obj = {'status': 'success', 'data': data}
-	return web.Response(text=json.dumps(response_obj))
+if __name__ == '__main__':
+	app = web.Application()
 
-app = web.Application()
+	# Routes 
 
-app.router.add_get('/report', handle)
+	routes.load_routes(app)
+	
 
-web.run_app(app)
+	web.run_app(app, port = 8082)
+
+
 
 
