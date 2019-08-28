@@ -12,7 +12,6 @@ if __name__ == '__main__':
 	app = web.Application()
 
 	# Routes 
-
 	routes.load_routes(app)
 	
 

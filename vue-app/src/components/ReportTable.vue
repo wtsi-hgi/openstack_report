@@ -3,7 +3,6 @@
 <template>
 	
 	<div id = "report-table">
-	
 		<b-table  :fields="fields" :items="clusters">		
 		</b-table>
 
