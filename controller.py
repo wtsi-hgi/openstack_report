@@ -23,13 +23,13 @@ cluster_list = dummy_cluster_list
 async def update_cluster():
 	global cluster_list
 	print("Sleep")
-	await asyncio.sleep(1000)
+	
 	print("Time before loading server list: ", datetime.now())
 	cluster_list = utils.load_server_list()
 	await utils.load_cpu_time(cluster_list)
-	
 	global time 
 	time = datetime.now()
+	await asyncio.sleep(1000)
 	print("Time after loading cpu hours: ", datetime.now())
 	print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
 		
