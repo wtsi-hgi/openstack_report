@@ -21,14 +21,13 @@ cluster_list = dummy_cluster_list
 
 #Background Job running in separate thread, which updates the global variables time and cluster
 async def update_cluster():
-	while True:
-		global cluster_list
-		cluster_list = utils.load_server_list()
-		await utils.load_cpu_time(cluster_list)
-		global time 
-		time = datetime.now()
-		print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
-		await asyncio.sleep(3600)
+	global cluster_list
+	cluster_list = utils.load_server_list()
+	await utils.load_cpu_time(cluster_list)
+	global time 
+	time = datetime.now()
+	print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
+		
 
 
 main_event_loop = asyncio.get_event_loop()

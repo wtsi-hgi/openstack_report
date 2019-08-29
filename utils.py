@@ -14,6 +14,7 @@ import asyncio
 
 
 from datetime import datetime
+import dateutil.parser
 
 
 def get_flavors(connection):
@@ -83,14 +84,15 @@ def load_server_list():
 			user_data['cpu_hours'] = None
 			if (is_master):
 				created_date = server.get('created_at', None)
-				user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%d-%m-%Y %H:%M%S")
+				user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%Z').strftime("%d-%m-%Y %H:%M%S")
 				user_data['slaves'] = 0
 				user_data['master'] = 1
 			else:
 				user_data['slaves'] = 1	
 				user_data['master'] = 0
 				created_date = server.get('created_at', None)
-				user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%d-%m-%Y %H:%M:%S")
+				# user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%Z').strftime("%d-%m-%Y %H:%M:%S")
+				user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
 			stored_users[user] = user_data
 		else:
 			user_data['server_names'].append(server['name'])
@@ -99,7 +101,8 @@ def load_server_list():
 				user_data['slaves'] = user_data['slaves'] + 1
 			else:
 				created_date = server.get('created_at', None)
-				user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%d-%m-%Y %H:%M:%S")
+				# user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%d-%m-%Y %H:%M:%S")
+				user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
 				user_data['master'] = user_data['master'] + 1
 
 	d = sorted(stored_users.values(), key= lambda x: (x["master"], x["created_date"]),reverse=True)
@@ -109,16 +112,16 @@ def load_server_list():
 
 
 def run_blocking_tasks(coroutine, *args):
-	# old_loop = asyncio.get_event_loop(old_loop)
+	
 	loop = asyncio.new_event_loop()
 	try:
-		print("ëvent loop set")
+		print("New elsevent loop set")
 		asyncio.set_event_loop(loop)
 		coroutine_object = coroutine(*args)
 		loop.run_until_complete(coroutine_object)
 	finally:
 		loop.close()
-		# asyncio.set_event_loop(old_loop)
+		
 	
 
 
