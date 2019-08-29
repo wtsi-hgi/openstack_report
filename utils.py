@@ -112,15 +112,15 @@ def load_server_list():
 
 
 def run_blocking_tasks(coroutine, *args):
-	
-	loop = asyncio.new_event_loop()
-	try:
-		print("New elsevent loop set")
-		asyncio.set_event_loop(loop)
-		coroutine_object = coroutine(*args)
-		loop.run_until_complete(coroutine_object)
-	finally:
-		loop.close()
+	while True:
+		loop = asyncio.new_event_loop()
+		try:
+			print("New event loop set")
+			asyncio.set_event_loop(loop)
+			coroutine_object = coroutine(*args)
+			loop.run_until_complete(coroutine_object)
+		finally:
+			loop.close()
 		
 	
 
