@@ -52,7 +52,7 @@ export default {
     async getClusters(){
       try{
   
-        const response = await fetch('http://127.0.0.1:8082/report')     
+        const response = await fetch('http://172.27.83.209:8082/report')     
         const wholeResponse = await response.json()
         this.clusters = wholeResponse.data
         this.lastUpdated = wholeResponse.time
