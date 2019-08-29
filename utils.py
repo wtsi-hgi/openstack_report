@@ -109,7 +109,7 @@ def load_server_list():
 
 
 def run_blocking_tasks(coroutine, *args):
-	old_loop = asyncio.get_event_loop(old_loop)
+	# old_loop = asyncio.get_event_loop(old_loop)
 	loop = asyncio.new_event_loop()
 	try:
 		print("ëvent loop set")
@@ -118,7 +118,7 @@ def run_blocking_tasks(coroutine, *args):
 		loop.run_until_complete(coroutine_object)
 	finally:
 		loop.close()
-		asyncio.set_event_loop(old_loop)
+		# asyncio.set_event_loop(old_loop)
 	
 
 
