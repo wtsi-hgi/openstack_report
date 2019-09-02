@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import openstack 
+import time
+import random
 # from credentials import get_keystone_creds
 
 # creds = get_keystone_creds()
@@ -63,6 +65,12 @@ async def load_cpu_time(cluster_list):
 	for cluster in cluster_list:
 		cluster['cpu_hours'] = await calculate_cpu_time_for_cluster(cluster)
 
+# async def load_cpu_time_dummy(cluster_list):
+# 	for cluster in cluster_list:
+# 		await asyncio.sleep(1)
+# 		cluster['cpu_hours'] = random.randint(1,100)
+
+
 
 def load_server_list():
 
@@ -111,17 +119,6 @@ def load_server_list():
 
 
 
-def run_blocking_tasks(coroutine, *args):
-	while True:
-		loop = asyncio.new_event_loop()
-		try:
-			print("New event loop set")
-			asyncio.set_event_loop(loop)
-			coroutine_object = coroutine(*args)
-			loop.run_until_complete(coroutine_object)
-		finally:
-			loop.close()
-		
 	
 
 

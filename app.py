@@ -14,8 +14,7 @@ if __name__ == '__main__':
 	# Routes 
 	routes.load_routes(app)
 	
-
-	web.run_app(app, port = 8082)
+	web.run_app(app, port = 3000)
 
 
 

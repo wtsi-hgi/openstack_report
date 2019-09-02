@@ -13,31 +13,48 @@ import asyncio
 from dummy import dummy_cluster_list
 
 
+
 from concurrent.futures import ThreadPoolExecutor
 
 
 time = datetime.now()	
 cluster_list = dummy_cluster_list
 
+
+
+def run_blocking_tasks(coroutine, *args):
+	while True:
+		loop = asyncio.new_event_loop()
+		try:
+			print("New event loop set")
+			asyncio.set_event_loop(loop)
+			coroutine_object = coroutine(*args)
+			loop.run_until_complete(coroutine_object)
+		finally:
+			loop.close()
+
+
 #Background Job running in separate thread, which updates the global variables time and cluster
 async def update_cluster():
 	global cluster_list
-	print("Sleep")
-	
-	print("Time before loading server list: ", datetime.now())
-	cluster_list = utils.load_server_list()
-	await utils.load_cpu_time(cluster_list)
+	print("Time before loading server data: ", datetime.now())
+	temp_cluster_list = utils.load_server_list()
+	# await utils.load_cpu_time(cluster_list)
+	await utils.load_cpu_time(temp_cluster_list)
+	cluster_list = temp_cluster_list
 	global time 
 	time = datetime.now()
 	await asyncio.sleep(1000)
-	print("Time after loading cpu hours: ", datetime.now())
+	print("Time after loading server data: ", datetime.now())
 	print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
 		
 
 
+
+
 main_event_loop = asyncio.get_event_loop()
 executor = ThreadPoolExecutor(max_workers=2)
-main_event_loop.run_in_executor(executor, utils.run_blocking_tasks, update_cluster)
+main_event_loop.run_in_executor(executor, run_blocking_tasks, update_cluster)
 	
 
 

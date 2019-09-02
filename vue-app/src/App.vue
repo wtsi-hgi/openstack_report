@@ -52,7 +52,8 @@ export default {
     async getClusters(){
       try{
   
-        const response = await fetch('http://172.27.83.209:8082/report')     
+        // const response = await fetch('http://172.27.83.209:8082/report')
+        const response = await fetch('http://172.27.83.209:3000/api/report')        
         const wholeResponse = await response.json()
         this.clusters = wholeResponse.data
         this.lastUpdated = wholeResponse.time
@@ -61,47 +62,47 @@ export default {
       }
     },
 
-     async refreshClusters(){
-      try{
+    //  async refreshClusters(){
+    //   try{
   
-        const response = await fetch('http://localhost:8081/refresh')     
-        const wholeResponse = await response.json()
-        this.clusters = wholeResponse.data
-        this.lastUpdated = wholeResponse.time
-      } catch (error) {
-        console.error(error)
-      }
-    },
-
-    // addCluster(cluster){
-    //   const lastId = this.employees.length > 0 ? this.cluster[this.cluster.length-1].id :0;
-    //   const id = lastId + 1
-    //   const newCluster = {...cluster, id}
-    //   this.clusters = [...this.clusters, cluster]
+    //     const response = await fetch('http://localhost:8081/refresh')     
+    //     const wholeResponse = await response.json()
+    //     this.clusters = wholeResponse.data
+    //     this.lastUpdated = wholeResponse.time
+    //   } catch (error) {
+    //     console.error(error)
+    //   }
     // },
 
-    async getCpuHours(user_name){
+    // // addCluster(cluster){
+    // //   const lastId = this.employees.length > 0 ? this.cluster[this.cluster.length-1].id :0;
+    // //   const id = lastId + 1
+    // //   const newCluster = {...cluster, id}
+    // //   this.clusters = [...this.clusters, cluster]
+    // // },
 
-      try {
-        var url = new URL("http://localhost:8081/report/cpu/time")
-        var params = {'user_name': user_name }
-        url.search = new URLSearchParams(params)
-        console.log("fetch request: " + JSON.stringify(url))
-        var response = await fetch(url)
-        // var params = {method: 'POST', body: JSON.stringify(server_names), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}
-        // const response = await fetch("http://localhost:8081/report/cpu/time", params)// 
-        const data = await response.json()
+    // async getCpuHours(user_name){
 
-        for (var cluster of this.clusters){
-          if (cluster['user_name'] == name){
-            cluster['cpu_hours'] = data
-             break;
-          }
-        }
-      } catch (error){
-        console.error(error)
-      }
-    }
+    //   try {
+    //     var url = new URL("http://localhost:8081/report/cpu/time")
+    //     var params = {'user_name': user_name }
+    //     url.search = new URLSearchParams(params)
+    //     console.log("fetch request: " + JSON.stringify(url))
+    //     var response = await fetch(url)
+    //     // var params = {method: 'POST', body: JSON.stringify(server_names), headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}
+    //     // const response = await fetch("http://localhost:8081/report/cpu/time", params)// 
+    //     const data = await response.json()
+
+    //     for (var cluster of this.clusters){
+    //       if (cluster['user_name'] == name){
+    //         cluster['cpu_hours'] = data
+    //          break;
+    //       }
+    //     }
+    //   } catch (error){
+    //     console.error(error)
+    //   }
+    // }
    }
 }
 
