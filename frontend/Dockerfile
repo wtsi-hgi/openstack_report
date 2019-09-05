@@ -1,12 +1,13 @@
-FROM  node:8.7.0-alpine
-RUN mkdir -p /vue-app
+FROM  node:10
+
 WORKDIR /vue-app
 
 
-COPY . /vue-app
+COPY package*.json ./
 
 RUN npm install 
 
+COPY . .
 
 EXPOSE 8080
 
