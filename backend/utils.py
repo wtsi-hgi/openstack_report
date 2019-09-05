@@ -33,23 +33,23 @@ def get_flavors(connection):
 		
 
 async def get_cpu_time(server_name):
-	return 0
-	# bashCommand = "echo openstack server show {} --diagnostics -f json".format(server_name)
-	# print(bashCommand)
-	# process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, shell = True)
-	# output, error = process.communicate()
-	# print("ërror ", error)
-	# print("output ", output)
-	# if output is not None:
-	# 	output_json_string = output.decode('utf8').replace("\n", "")
-	# 	output_dictionary= json.loads(output_json_string)
-	# 	cpu_time = 0;
+
+	bashCommand = "openstack server show {} --diagnostics -f json".format(server_name)
+	print(bashCommand)
+	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+	output, error = process.communicate()
+	print("ërror ", error)
+	print("output ", output)
+	if output is not None:
+		output_json_string = output.decode('utf8').replace("\n", "")
+		output_dictionary= json.loads(output_json_string)
+		cpu_time = 0;
 	
-	# 	for key, value in output_dictionary.items():
-	# 		if key.startswith("cpu"):
-	# 			print(key, ":" , value) 
-	# 			cpu_time += value
-	# 	return round(cpu_time/(3600*1000000000))
+		for key, value in output_dictionary.items():
+			if key.startswith("cpu"):
+				print(key, ":" , value) 
+				cpu_time += value
+		return round(cpu_time/(3600*1000000000))
 
 
 async def calculate_cpu_time_for_cluster(cluster):

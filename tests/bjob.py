@@ -8,8 +8,8 @@ async def get_cpu_time(server_name):
 	print(bashCommand)
 	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
 	output, error = process.communicate()
-	# print("ërror ", error)
-	# print("output ", output)
+	print("ërror ", error)
+	print("output ", output)
 	if output is not None:
 		output_json_string = output.decode('utf8').replace("\n", "")
 	

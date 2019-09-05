@@ -44,7 +44,7 @@ async def update_cluster():
 	cluster_list = temp_cluster_list
 	global time 
 	time = datetime.now()
-	await asyncio.sleep(4)
+	await asyncio.sleep(1000)
 	print("Time after loading server data: ", datetime.now())
 	print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
 		
