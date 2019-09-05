@@ -44,7 +44,7 @@ async def update_cluster():
 	cluster_list = temp_cluster_list
 	global time 
 	time = datetime.now()
-	await asyncio.sleep(1000)
+	await asyncio.sleep(4)
 	print("Time after loading server data: ", datetime.now())
 	print("Time is now: ", time.strftime("%m/%d/%Y, %H:%M:%S"))
 		
@@ -88,12 +88,5 @@ async def get_report(request):
 	# # for server in server_names:
 	# return web.Response(text=json.dumps(response_obj), headers={'Access-Control-Allow-Origin':'*'})
 
-# async def refresh_report(request):
-# 	time = datetime.now()
-# 	print("Refresh state called at: ", time)
-# 	cluster_list = utils.load_server_list()
-# 	utils.load_cpu_time(cluster_list)
-# 	response_obj = {'time':time.strftime("%H:%M:%S, %d-%m-%Y") ,'data': cluster_list}
-# 	return web.Response(text=json.dumps(response_obj), headers={'ACCESS-CONTROL-ALLOW-ORIGIN':'*'})
-# 	print("Refreshed CLUSTER LIST: ", cluster_list)
+
 

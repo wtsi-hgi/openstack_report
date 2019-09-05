@@ -3,6 +3,7 @@
 import openstack 
 import time
 import random
+import os
 # from credentials import get_keystone_creds
 
 # creds = get_keystone_creds()
@@ -32,27 +33,26 @@ def get_flavors(connection):
 		
 
 async def get_cpu_time(server_name):
-	# return 0
-	bashCommand = "openstack server show {} --diagnostics -f json".format(server_name)
-	print(bashCommand)
-	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	output, error = process.communicate()
-	print("ërror ", error)
-	print("output ", output)
-	if output is not None:
-		output_json_string = output.decode('utf8').replace("\n", "")
-		output_dictionary= json.loads(output_json_string)
-		cpu_time = 0;
+	return 0
+	# bashCommand = "echo openstack server show {} --diagnostics -f json".format(server_name)
+	# print(bashCommand)
+	# process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, shell = True)
+	# output, error = process.communicate()
+	# print("ërror ", error)
+	# print("output ", output)
+	# if output is not None:
+	# 	output_json_string = output.decode('utf8').replace("\n", "")
+	# 	output_dictionary= json.loads(output_json_string)
+	# 	cpu_time = 0;
 	
-		for key, value in output_dictionary.items():
-			if key.startswith("cpu"):
-				print(key, ":" , value) 
-				cpu_time += value
-		return round(cpu_time/(3600*1000000000))
+	# 	for key, value in output_dictionary.items():
+	# 		if key.startswith("cpu"):
+	# 			print(key, ":" , value) 
+	# 			cpu_time += value
+	# 	return round(cpu_time/(3600*1000000000))
 
 
 async def calculate_cpu_time_for_cluster(cluster):
-	
 	cpu_hours = 0
 	server_names = cluster['server_names']
 	for server_name in server_names:
@@ -61,7 +61,6 @@ async def calculate_cpu_time_for_cluster(cluster):
 	return cpu_hours
 
 async def load_cpu_time(cluster_list):
-	print("Load cpu time called")
 	for cluster in cluster_list:
 		cluster['cpu_hours'] = await calculate_cpu_time_for_cluster(cluster)
 
@@ -74,9 +73,10 @@ async def load_cpu_time(cluster_list):
 
 def load_server_list():
 
-	print("Load server list called")
+
 	# What if this fails?
-	connection = openstack.connect() 
+
+	connection = openstack.connect()
 	# What if this fails?
 	flavor_id_map =  get_flavors(connection)
 	stored_users = {}

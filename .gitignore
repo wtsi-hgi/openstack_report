@@ -1,2 +1,2 @@
-*-openrc.sh
-.venv/
+backend/*-openrc.sh
+backend/.venv/
