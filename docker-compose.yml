@@ -1,23 +1,24 @@
 version: '3'
 
-# Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configurationCompose has commands for managing the whole lifecycle of your application:
+# Compose has commands for managing the whole lifecycle of your application:
 
 # Start, stop, and rebuild services
 # View the status of running services
 # Stream the log output of running services
 # Run a one-off command on a service
 
-
 services:
   backend:
-    build: ./backend
+    image: mercury/openstack_report_backend:v1.0
     ports: 
       - "3000:3000"
     restart: always
     
   frontend:
-    build: ./frontend
+    image; mercury/openstack_report_frontend:v1.0
     ports: 
       - "8080:8080"
     restart: "always"
+    depends_on: 
+    - backend
 

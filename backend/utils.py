@@ -31,7 +31,6 @@ def get_flavors(connection):
 	print(flavorIdMap)
 	return flavorIdMap
 		
-
 async def get_cpu_time(server_name):
 
 	bashCommand = "openstack server show {} --diagnostics -f json".format(server_name)
@@ -51,7 +50,6 @@ async def get_cpu_time(server_name):
 				cpu_time += value
 		return round(cpu_time/(3600*1000000000))
 
-
 async def calculate_cpu_time_for_cluster(cluster):
 	cpu_hours = 0
 	server_names = cluster['server_names']
@@ -69,11 +67,7 @@ async def load_cpu_time(cluster_list):
 # 		await asyncio.sleep(1)
 # 		cluster['cpu_hours'] = random.randint(1,100)
 
-
-
 def load_server_list():
-
-
 	# What if this fails?
 
 	connection = openstack.connect()
@@ -118,7 +112,42 @@ def load_server_list():
 	return d
 
 
+class Report:
 
+	def __init__(self, time, cluster_list):
+		self.time = time
+		self.cluster_list = cluster_list
+
+	def set_time(self, new_time):
+		self.time = new_time
+
+	def set_clusters(self,new_clusters):
+		self.cluster_list = new_clusters
+
+
+def run_blocking_tasks(coroutine, *args):
+	while True:
+		loop = asyncio.new_event_loop()
+		try:
+			print("New event loop set")
+			asyncio.set_event_loop(loop)
+			coroutine_object = coroutine(*args)
+			loop.run_until_complete(coroutine_object)
+		finally:
+			loop.close()
+
+#Background Job running in separate thread, which updates the global variables time and cluster
+async def update_report(report):
+
+	print("Time before loading server data: ", datetime.now())
+	temp_cluster_list = load_server_list()
+	await load_cpu_time(temp_cluster_list)
+	time = datetime.now()
+	report.set_time(time)
+	report.set_clusters(temp_cluster_list)
+	await asyncio.sleep(1000)
+	print("Time after loading server data: ", datetime.now())
+	
 	
 
 
