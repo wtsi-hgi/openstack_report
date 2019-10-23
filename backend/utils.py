@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+"""
+A module consisting of utility functions. 
+"""
 import openstack 
 import time
 import random
@@ -21,6 +24,7 @@ import dateutil.parser
 
 
 def get_flavors(connection):
+
 	
 	flavors = connection.list_flavors(connection)
 	flavorIdMap = {}
@@ -32,43 +36,65 @@ def get_flavors(connection):
 	return flavorIdMap
 		
 async def get_cpu_time(server_name):
-
-	bashCommand = "openstack server show {} --diagnostics -f json".format(server_name)
-	print(bashCommand)
-	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	output, error = process.communicate()
-	print("ërror ", error)
-	print("output ", output)
-	if output is not None:
-		output_json_string = output.decode('utf8').replace("\n", "")
-		output_dictionary= json.loads(output_json_string)
-		cpu_time = 0;
-	
-		for key, value in output_dictionary.items():
-			if key.startswith("cpu"):
-				print(key, ":" , value) 
-				cpu_time += value
-		return round(cpu_time/(3600*1000000000))
+	try:
+		bashCommand = "openstack server show {} --diagnostics -f json".format(server_name)
+		print(bashCommand)
+		process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+		output, error = process.communicate()
+		print("ërror ", error)
+		print("output ", output)
+		if output is not None:
+			output_json_string = output.decode('utf8').replace("\n", "")
+			output_dictionary= json.loads(output_json_string)
+			cpu_time = 0;
+		
+			for key, value in output_dictionary.items():
+				if key.startswith("cpu"):
+					print(key, ":" , value) 
+					cpu_time += value
+			return round(cpu_time/(3600*1000000000))
+	except Exception as e:
+		print("Could not calculate cputime for:", server_names)
+		raise e				
 
 async def calculate_cpu_time_for_cluster(cluster):
 	cpu_hours = 0
 	server_names = cluster['server_names']
-	for server_name in server_names:
-		latest_cpu_hours = await get_cpu_time(server_name)
-		cpu_hours = latest_cpu_hours + cpu_hours
+	try:
+		for server_name in server_names:
+			latest_cpu_hours = await get_cpu_time(server_name)
+			cpu_hours = latest_cpu_hours + cpu_hours
+	except Exception:
+		raise e
 	return cpu_hours
 
+
+# cluster_list has one row per user
 async def load_cpu_time(cluster_list):
 	for cluster in cluster_list:
-		cluster['cpu_hours'] = await calculate_cpu_time_for_cluster(cluster)
+		try:
+			cluster['cpu_hours'] = await calculate_cpu_time_for_cluster(cluster)
+		except Exception as e:
+			print("Error while loading cpu time for user: ", cluster['user_name'])
 
 # async def load_cpu_time_dummy(cluster_list):
 # 	for cluster in cluster_list:
 # 		await asyncio.sleep(1)
 # 		cluster['cpu_hours'] = random.randint(1,100)
 
-def load_server_list():
-	# What if this fails?
+
+
+# What if this fails?
+async def load_server_list():
+	"""Load the list of servers and populate it with flavor name, whether the server is a hail master, and other such info"
+		# This must use the environmental variables to conenct to keystone.
+		Establishes a connection by authenticating with keystone. (blocking)
+		Gets all flavours (blocking).
+		Creates a dictionary of users.
+		Iterates over the list of servers. Each server is mapped to some user and manipulates the user record. 
+
+	"""
+ 
 
 	connection = openstack.connect()
 	# What if this fails?
@@ -112,7 +138,11 @@ def load_server_list():
 	return d
 
 
+
+
+#Report class with the following functions: 
 class Report:
+	'''This class describes a report'''
 
 	def __init__(self, time, cluster_list):
 		self.time = time
@@ -125,28 +155,25 @@ class Report:
 		self.cluster_list = new_clusters
 
 
+# Runs in a separate thread. On every iteration, it starts a new event loop, schedules a couroutine on it, and then closes the loop. To Answer: What if the coroutine fails? Do coroutines return an exception? 
 def run_blocking_tasks(coroutine, *args):
-	while True:
-		loop = asyncio.new_event_loop()
-		try:
-			print("New event loop set")
-			asyncio.set_event_loop(loop)
-			coroutine_object = coroutine(*args)
-			loop.run_until_complete(coroutine_object)
-		finally:
-			loop.close()
+	while True:	
+		coroutine_object = coroutine(*args) #Example: update_report(report)
+		asyncio.run(coroutine_object)
+	
 
-#Background Job running in separate thread, which updates the global variables time and cluster
+
 async def update_report(report):
+	"""report = {user, server_name, cores, cpu hours, master, slaves}
+	
 
-	print("Time before loading server data: ", datetime.now())
-	temp_cluster_list = load_server_list()
+	"""
+	temp_cluster_list = await load_server_list()
 	await load_cpu_time(temp_cluster_list)
 	time = datetime.now()
 	report.set_time(time)
 	report.set_clusters(temp_cluster_list)
 	await asyncio.sleep(1000)
-	print("Time after loading server data: ", datetime.now())
 	
 	
 
