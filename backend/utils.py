@@ -24,7 +24,6 @@ import dateutil.parser
 
 
 def get_flavors(connection):
-
 	
 	flavors = connection.list_flavors(connection)
 	flavorIdMap = {}
