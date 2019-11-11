@@ -11,11 +11,13 @@
 import ReportTable from '@/components/ReportTable.vue'
 import Nav from '@/components/Nav.vue'
 
+
 export default {
   name: 'app',
+
   components: {
     ReportTable,
-    Nav,
+    Nav
   },
 
   data(){
@@ -32,8 +34,8 @@ export default {
   methods: {
 
     async getClusters(){
-      try{
-        const response = await fetch('http://apps.hgi.sanger.ac.uk/cluster-report/api')        
+      try {
+        const response = await fetch(process.env.VUE_APP_BACKEND_API_URL + '/report')        
         const wholeResponse = await response.json()
         this.clusters = wholeResponse.data
         this.lastUpdated = wholeResponse.time
