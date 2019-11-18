@@ -45,9 +45,10 @@ async def update_report(report):
     print('Time started')
     report.set_time(time)
     report.set_clusters(temp_cluster_list)
-    await asyncio.sleep(1000)
+  
     print('Time taken: '.format(datetime.now() - time))
 
+    await asyncio.sleep(1000)
 # What if this fails?
 async def load_server_list():
     """Load the list of servers and populate it with flavor name, whether the server is a hail master, and other such info"
@@ -134,6 +135,7 @@ async def calculate_cpu_time_for_cluster(cluster):
     server_names = cluster['server_names']
     try:
         latest_cpu_hours = asyncio.gather(*[get_cpu_time(server_name) for server_name in server_names])
+        await latest_cpu_hours
         cpu_hours = sum(latest_cpu_hours)
     except Exception:
         raise e
