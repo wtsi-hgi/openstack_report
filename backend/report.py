@@ -75,7 +75,7 @@ async def load_server_list():
             user_data['cpu_hours'] = None
             if (is_master):
                 created_date = server.get('created_at', None)
-                user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%Z').strftime("%d-%m-%Y %H:%M%S")
+                user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
                 user_data['slaves'] = 0
                 user_data['master'] = 1
             else:
