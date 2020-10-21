@@ -10,46 +10,46 @@ version: '3.5'
 services:
   backend:
     image: mercury/openstack_report_backend:v2.0
-    ports: 
-      - "3000:3000" 
+    ports:
+      - "3000:3000"
     secrets:
       - source: backend_secret
         target: /app/hgi-openrc.sh
     networks: [app]
 
   frontend:
-    image: mercury/openstack_report_frontend:prod    
-    depends_on: 
+    image: mercury/openstack_report_frontend:prod
+    depends_on:
       - backend
     networks: [app]
-  
+
   weaver:
-    image: mercury/hgi-weaver 
+    image: mercury/hgi-weaver
     ports:
       - "3838:3838"
     secrets:
-      - source: weaver_secret      
+      - source: weaver_secret
         target: /srv/shiny-server/weaver/config.yml
     networks: [app]
 
   nginx:
-    image: nginx 
-    ports: 
+    image: nginx
+    ports:
       - "80:8080"
     depends_on:
       - frontend
       - backend
     configs:
       - source: nginx_config
-        target: /etc/nginx/nginx.conf 
+        target: /etc/nginx/nginx.conf
     networks: [app]
 
 secrets:
    backend_secret:
       file: hgi-openrc.sh
    weaver_secret:
-      file: config.yml    
-  
+      file: config.yml
+
 configs:
    nginx_config:
       file: nginx.conf
@@ -58,5 +58,5 @@ networks:
   app:
     ipam:
       driver: default
-      config:
-      - subnet: 10.0.1.1/24
+#      config:
+#      - subnet: 10.0.1.1/24
