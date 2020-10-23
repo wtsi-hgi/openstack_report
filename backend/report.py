@@ -77,7 +77,7 @@ async def load_server_list():
         cluster_match = re.search("^(?P<user>.+?)-(?P<cluster>.+)-(?P<role>master$|manager(?=-\d{2}$)|worker(?=-\d{2}$))", server.name)
         if cluster_match is not None:
             user = cluster_match.group(1)
-            if user == "theta" && "mercury" in server.name:
+            if user == "theta" and "mercury" in server.name:
                 user = "mercury"
             if cluster_match.group(3) == "master" or cluster_match.group(3) == "manager":
                 is_master = "master"
