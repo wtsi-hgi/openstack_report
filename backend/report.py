@@ -5,9 +5,10 @@ A module consisting of utility functions.
 """
 from novaclient import client
 import openstack
+import os
 import time as x
 import random
-import os
+import re
 # from credentials import get_keystone_creds
 # creds = get_keystone_creds()
 # novaclient.Client(Version, User, Password, Project_ID, Auth_URL, region_name='Region1')
@@ -73,35 +74,54 @@ async def load_server_list():
     flavor_id_map =  get_flavors(nova)
     stored_users = {}
     for server in nova.servers.list():
-        user = server.metadata.get('deployment_owner', None)
+        cluster_match = re.search("^(?P<user>.+?)-(?P<cluster>.+)-(?P<role>master$|manager(?=-\d{2}$)|worker(?=-\d{2}$))", server.name)
+        if cluster_match is not None:
+            user = cluster_match.group(1)
+            if user == "theta" && "mercury" in server.name:
+                user = "mercury"
+            if cluster_match.group(3) == "master" or cluster_match.group(3) == "manager":
+                is_master = "master"
+            else:
+                is_master = "slave"
+        else:
+            user = "Non-Cluster"
+            is_master = "non-cluster"
+
         flavor_id = server.flavor.get('id')
         vcpus = flavor_id_map.get(flavor_id)
-        is_master = server.metadata.get('role_name', None) == 'hail-master'
         user_data = stored_users.get(user)
         if user_data is None:
             user_data = {"user_name": user, "server_names": [server.name]}
             user_data['cores'] = vcpus
             user_data['cpu_hours'] = None
-            if (is_master):
+            if (is_master == "master"):
                 created_date = server.created
                 user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
                 user_data['slaves'] = 0
                 user_data['master'] = 1
-            else:
+                user_data['other'] = 0
+            elif (is_master == 'slave'):
                 user_data['slaves'] = 1
                 user_data['master'] = 0
+                user_data['other'] = 0
                 created_date = server.created
-                # user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%Z').strftime("%d-%m-%Y %H:%M:%S")
+                user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
+            else:
+                user_data['slaves'] = 0
+                user_data['master'] = 0
+                user_data['other'] = 1
+                created_date = server.created
                 user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
             stored_users[user] = user_data
         else:
             user_data['server_names'].append(server.name)
             user_data['cores'] = user_data['cores'] + vcpus
-            if not is_master:
+            if is_master == "slave":
                 user_data['slaves'] = user_data['slaves'] + 1
+            elif is_master == "non-cluster":
+                user_data['other'] = user_data['other'] + 1
             else:
                 created_date = server.created
-                # user_data['created_date'] = datetime.strptime(created_date, '%Y-%m-%dT%H:%M:%S%z').strftime("%d-%m-%Y %H:%M:%S")
                 user_data['created_date'] = dateutil.parser.parse(created_date).strftime("%d-%m-%Y %H:%M:%S")
                 user_data['master'] = user_data['master'] + 1
 
@@ -160,6 +180,7 @@ async def get_cpu_time(server_name):
         if server is not None:
             process = server[0].diagnostics()
             output = process[1]
+            print("--Diagnostics for " + server.name + "--")
             print(output)
             cpu_time = 0
             for key, value in output.items():
