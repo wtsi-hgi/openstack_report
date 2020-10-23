@@ -1,15 +1,15 @@
 
 
 <template>
-	
+
 	<div id = "report-table">
-		<b-table  :fields="fields" :items="clusters">		
+		<b-table  :fields="fields" :items="clusters">
 		</b-table>
 
-	
+
 	</div>
 
-	
+
 </template>
 
 
@@ -45,6 +45,13 @@
 						sortable: true
 
 					},
+					
+          {
+                  key: 'other',
+                  label: "Other Nodes",
+                  sortable: true
+
+          },
 
 					{
 						key: 'cores',
@@ -67,19 +74,19 @@
 					},
 
 					{
-						
+
 						label: "Actions",
 						sortable: false
 
 					}
-						
+
 				]
 			}
 
 		},
 
 		created() {
-		
+
 		},
 
 		watch: {
@@ -90,7 +97,7 @@
 
 		methods: {
 
-		
+
 
 		}
 
@@ -99,5 +106,3 @@
 </script>
 
 <!-- <style scoped> </style> -->
-
-
