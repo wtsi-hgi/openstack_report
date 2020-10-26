@@ -180,7 +180,7 @@ async def get_cpu_time(server_name):
         if server is not None:
             process = server[0].diagnostics()
             output = process[1]
-            print("--Diagnostics for " + server.name + "--")
+            print("=-=-=-=-=- Diagnostics for " + server_name + " -=-=-=-=-=")
             print(output)
             cpu_time = 0
             for key, value in output.items():
