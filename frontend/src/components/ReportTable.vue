@@ -26,6 +26,13 @@
 
 				fields:[
 					{
+						key: 'tenant',
+						label: "Tenant",
+						sortable: true
+
+					},
+
+					{
 						key: 'user_name',
 						label: "User",
 						sortable: false
@@ -45,11 +52,11 @@
 						sortable: true
 
 					},
-					
+
           {
-                  key: 'other',
-                  label: "Other Nodes",
-                  sortable: true
+            key: 'other',
+            label: "Other Nodes",
+            sortable: true
 
           },
 
