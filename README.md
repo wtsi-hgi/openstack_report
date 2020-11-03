@@ -6,7 +6,7 @@ This project allows for analysis of HGI tenants. The project is dockerized and s
 ## <ins>__Guide:__</ins>
 
 ### <ins>The Backend:</ins>
-The backend collates a dictionary of instance data roughly every 15 minutes; it grabs information about the Number of Nodes, Number of Cores, Number of CPU hours and groups this per user per tenant.
+The backend collates a dictionary of instance data roughly every 15 minutes; it grabs information about the Number of Nodes, Number of Cores, Number of CPU hours and groups them by user per tenant.
 
 #### Requirements:
  * Python 3.7
