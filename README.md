@@ -1,6 +1,6 @@
 # <ins>__HGI-Openstack-Cluster-Report__</ins>
 
-This project allows for analysis of HGI tenants. The project is dockerized and sectioned into two halves: The backend, and the Frontend. As such, this will be a guide on setting up each half.
+This project allows for analysis of HGI tenants. The project is dockerized and sectioned into two halves: The backend, and the Frontend. As such, this will be a guide on setting up each half. The production version of this codebase can be found at [Link] https://apps.hgi.sanger.ac.uk/cluster-report/
 
 
 ## <ins>__Guide:__</ins>
