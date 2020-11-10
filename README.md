@@ -14,7 +14,7 @@ The backend collates a dictionary of instance data roughly every 15 minutes; it 
  * Other requirements are contained in: backend/requirements.txt
  * Appropriate Secret files in the directory
      * hgi-openrc.sh
-     * tenants_conf.yml
+     * tenants_conf.yml (Found in /hgi/secrets/swarn_secrets)
 
 #### Setup:
 `Note: Following the steps from the DockerFile will give you the necessary steps for setup`
